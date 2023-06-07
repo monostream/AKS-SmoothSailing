@@ -1,7 +1,8 @@
 # AKS-SmoothSailing
+![AKS Header](aks-smoothsailing.png)
 
 
-**DISCLAIMER**
+# **DISCLAIMER**
 
 **PLEASE READ CAREFULLY BEFORE USING THIS CODE**
 
