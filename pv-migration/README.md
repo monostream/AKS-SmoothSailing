@@ -1,12 +1,32 @@
 # Storage Migration Script
 
+# **DISCLAIMER**
+
+**PLEASE READ CAREFULLY BEFORE USING THIS CODE**
+
+This software is provided "as is", without warranty of any kind, express or implied. The user assumes full responsibility for the use of this code. The authors, maintainers, and contributors of this software are not liable for any direct, indirect, incidental, special, exemplary, or consequential damages arising in any way out of the use of this software.
+
+This code is complex and has the potential to affect your persistent volumes significantly. It is intended for use ONLY by individuals who have a comprehensive understanding of its functions and potential impact. Under NO circumstances should this code be used if you are unsure of what you are doing or do not fully understand the potential consequences.
+
+By choosing to use this code, you acknowledge and accept all risks associated with its use, including, but not limited to, the potential for data loss, system disruption, or other adverse effects. You are solely responsible for any damages or losses that arise from your use of this code. If you do not fully understand this disclaimer, *DO NOT* use this software.
+
+
 **Important: This migration script ensures that all data is retained during the migration process. There is no data loss when using this script.**
 
 This repository contains a Go script that facilitates the migration of PersistentVolumes (PVs) from one storage class to another in a Kubernetes cluster. The script automates the process of updating PVs and their corresponding PersistentVolumeClaims (PVCs) to use a new storage class.
 
+
 ## Deprecation of Failure Domain Labels
 
 The labels `failure-domain.beta.kubernetes.io/zone` and `failure-domain.beta.kubernetes.io/region` have been deprecated in AKS starting from version 1.24 and have been completely removed in version 1.26. Therefore, it is necessary to migrate your PVs and PVCs before updating to AKS version 1.26.
+
+## Check if your has PVs to mirate
+
+Connect to your cluster and run the following command:
+
+```bash
+kubectl get pv -A -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.claimRef.namespace}{"\t"}{.spec.claimRef.name}{"\n"}{end}' | grep "azure-disk-dynamic-provisioner" || true
+```
 
 ## Prerequisites
 
@@ -53,6 +73,8 @@ To run the script using Docker, follow these steps:
 3. Follow the script's output to monitor the migration process. The script will update the PVs and PVCs accordingly.
 
 ## Build the image by your self
+
+To build the image by yourself you need to have golang installed.
 
    ```bash
    git clone https://github.com/monostream/AKS-SmoothSailing.git
