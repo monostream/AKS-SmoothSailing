@@ -20,26 +20,17 @@ Before using this script, ensure that you have the following:
 
 To run the script using Docker, follow these steps:
 
-1. Clone the repository:
+1. Clone the repository and build the dockerfile:
 
    ```bash
    git clone https://github.com/monostream/AKS-SmoothSailing.git
-   ```
-
-2. Navigate to the project directory:
-
-   ```bash
    cd pv-migration
-   ```
-
-3. Build the Docker image:
-
-   ```bash
    docker build -t pv-migration .
    ```
 
-4. Run the Docker container, mounting the local kubeconfig file:
+2. Run the Docker container:
 
+   a) execute the command directly and mounting the local kubeconfig file
    ```bash
    docker run -v ~/.kube/config:/app/.kube/config pv-migration --existing-storageclass <existing-storage-class> --new-storageclass <new-storage-class> --clustername <cluster-name>
    ```
@@ -48,7 +39,28 @@ To run the script using Docker, follow these steps:
 
    Note: The script requires a valid kubeconfig file to connect to the Kubernetes cluster. By mounting `~/.kube/config` to `/app/.kube/config` in the container, the script can access the kubeconfig file.
 
-5. Follow the script's output to monitor the migration process. The script will update the PVs and PVCs accordingly.
+
+   b) If you prefer to interact interactive way, you can start the image like this. In the Image AZ-CLI and kubectl is available
+
+   ```bash
+   docker run -it --rm -v ~/.kube:/root/.kube pv-migration:latest bash
+   az login
+   az aks get-credentials --admin --resource-group your-rg --name your-cluster
+
+   pv-migration --existing-storageclass <existing-storage-class> --new-storageclass <new-storage-class> --clustername <cluster-name>
+   ```
+
+3. Follow the script's output to monitor the migration process. The script will update the PVs and PVCs accordingly.
+
+## Build the image by your self
+
+   ```bash
+   git clone https://github.com/monostream/AKS-SmoothSailing.git
+   cd pv-migration
+   go mod download
+   go build
+   ```
+
 
 ## Flags
 
