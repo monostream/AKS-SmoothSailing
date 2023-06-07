@@ -1,4 +1,4 @@
-# AKS-MakeItRight
+# AKS-SmoothSailing
 
 
 **DISCLAIMER**
