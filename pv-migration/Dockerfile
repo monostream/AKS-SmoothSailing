@@ -18,7 +18,8 @@ WORKDIR /app
 COPY --from=builder --chown=nobody:nobody /src/pv-migration .
 
 RUN addgroup -g 1000 migrator \
-    && adduser -D -u 1000 -G migrator -s /bin/ash migrator
+    && adduser -D -u 1000 -G migrator -s /bin/ash migrator \
+    && chown migrator:migrator /app
 
 USER migrator
 

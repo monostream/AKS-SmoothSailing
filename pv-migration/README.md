@@ -25,7 +25,7 @@ The labels `failure-domain.beta.kubernetes.io/zone` and `failure-domain.beta.kub
 Connect to your cluster and run the following command:
 
 ```bash
-kubectl get pv -A -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.claimRef.namespace}{"\t"}{.spec.claimRef.name}{"\n"}{end}' | grep "azure-disk-dynamic-provisioner" || true
+kubectl get pv -A -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.claimRef.namespace}{"\t"}{.spec.claimRef.name}{"\t"}{.metadata.annotations}{"\n"}{end}' | grep "azure-disk-dynamic-provisioner"
 ```
 
 ## Prerequisites
