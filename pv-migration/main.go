@@ -22,6 +22,12 @@ import (
 type controllerRef struct{}
 
 func main() {
+	migrateStorage()
+
+	log.Println("done")
+}
+
+func migrateStorage() {
 	var existingStorageClass string
 	var newStorageClass string
 	var clustername string
@@ -447,6 +453,4 @@ func main() {
 
 		log.Printf("PVC successfully recreated: %s/%s\n", claimRefNamespace, claimRefName)
 	}
-
-	log.Println("done")
 }
