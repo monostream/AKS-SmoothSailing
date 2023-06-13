@@ -197,6 +197,12 @@ func migrateStorage() {
 					}
 
 					defer func() {
+						daemonset, err := client.AppsV1().DaemonSets(claimRefNamespace).Get(ctx, controllerName, metav1.GetOptions{})
+
+						if err != nil {
+							log.Println("error: failed to get object for daemonset restore" + controllerName + " in namespace " + claimRefNamespace + ": " + err.Error())
+						}
+
 						delete(daemonset.Spec.Template.Spec.NodeSelector, "storage-migration")
 
 						if _, err = client.AppsV1().DaemonSets(claimRefNamespace).Update(ctx, daemonset, metav1.UpdateOptions{}); err != nil {
@@ -222,6 +228,12 @@ func migrateStorage() {
 					}
 
 					defer func() {
+						statefulset, err := client.AppsV1().StatefulSets(claimRefNamespace).Get(ctx, controllerName, metav1.GetOptions{})
+
+						if err != nil {
+							log.Println("error: failed to get object for statefulset restore" + controllerName + " in namespace " + claimRefNamespace + ": " + err.Error())
+						}
+
 						statefulset.Spec.Replicas = originalReplicas
 
 						if _, err = client.AppsV1().StatefulSets(claimRefNamespace).Update(ctx, statefulset, metav1.UpdateOptions{}); err != nil {
@@ -263,6 +275,12 @@ func migrateStorage() {
 						}
 
 						defer func() {
+							deployment, err := client.AppsV1().Deployments(claimRefNamespace).Get(ctx, controllerName, metav1.GetOptions{})
+
+							if err != nil {
+								log.Println("error: failed to get object for deployment restore" + controllerName + " in namespace " + claimRefNamespace + ": " + err.Error())
+							}
+
 							deployment.Spec.Replicas = originalReplicas
 
 							if _, err = client.AppsV1().Deployments(claimRefNamespace).Update(ctx, deployment, metav1.UpdateOptions{}); err != nil {
@@ -280,6 +298,12 @@ func migrateStorage() {
 						}
 
 						defer func() {
+							replicaset, err := client.AppsV1().ReplicaSets(claimRefNamespace).Get(ctx, controllerName, metav1.GetOptions{})
+
+							if err != nil {
+								log.Println("error: failed to get object for replicaset restore" + controllerName + " in namespace " + claimRefNamespace + ": " + err.Error())
+							}
+
 							replicaset.Spec.Replicas = originalReplicas
 
 							if _, err = client.AppsV1().ReplicaSets(claimRefNamespace).Update(ctx, replicaset, metav1.UpdateOptions{}); err != nil {
@@ -306,6 +330,12 @@ func migrateStorage() {
 					}
 
 					defer func() {
+						deployment, err := client.AppsV1().Deployments(claimRefNamespace).Get(ctx, controllerName, metav1.GetOptions{})
+
+						if err != nil {
+							log.Println("error: failed to get object for deployment restore" + controllerName + " in namespace " + claimRefNamespace + ": " + err.Error())
+						}
+
 						deployment.Spec.Replicas = originalReplicas
 
 						if _, err = client.AppsV1().Deployments(claimRefNamespace).Update(ctx, deployment, metav1.UpdateOptions{}); err != nil {
