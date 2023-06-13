@@ -10,9 +10,11 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Azure/go-autorest/autorest/to"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
@@ -437,11 +439,31 @@ func migrateStorage() {
 			continue
 		}
 
-		err = client.CoreV1().PersistentVolumeClaims(claimRefNamespace).Delete(context.Background(), claimRefName, metav1.DeleteOptions{})
+		propagationPolicy := metav1.DeletePropagationForeground
+
+		err = client.CoreV1().PersistentVolumeClaims(claimRefNamespace).Delete(context.Background(), claimRefName, metav1.DeleteOptions{
+			PropagationPolicy: &propagationPolicy,
+		})
 
 		if err != nil {
 			log.Println("error: failed to delete old pvc " + claimRefName + " in namespace " + claimRefNamespace + ": " + err.Error())
 			continue
+		}
+
+		for {
+			_, err := client.CoreV1().PersistentVolumeClaims(claimRefNamespace).Get(context.Background(), claimRefName, metav1.GetOptions{})
+
+			if err != nil {
+				if errors.IsNotFound(err) {
+					break
+				} else {
+					log.Println("error: failed to get old pvc " + claimRefName + " in namespace " + claimRefNamespace + ": " + err.Error())
+					continue
+				}
+			}
+
+			log.Println("waiting for old pvc " + claimRefName + " in namespace " + claimRefNamespace + " to be deleted")
+			time.Sleep(1 * time.Second)
 		}
 
 		log.Printf("applying new PVC manifest: %s/new-pvc.%s.%s.json\n", clustername, claimRefName, claimRefNamespace)
