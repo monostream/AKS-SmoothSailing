@@ -20,7 +20,7 @@ This repository contains a Go script that facilitates the migration of Persisten
 
 The labels `failure-domain.beta.kubernetes.io/zone` and `failure-domain.beta.kubernetes.io/region` have been deprecated in AKS starting from version 1.24 and have been completely removed in version 1.26. Therefore, it is necessary to migrate your PVs and PVCs before updating to AKS version 1.26.
 
-## Check if your has PVs to mirate
+## Check if your cluster has PVs to migrate
 
 Connect to your cluster and run the following command:
 
