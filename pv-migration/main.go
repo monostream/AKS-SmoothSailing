@@ -94,7 +94,13 @@ func migrateStorage() {
 	skuName := newStorageClassObj.Parameters["skuname"]
 
 	if skuName == "" {
-		panic("error: the new storage class does not have a sku name")
+		storageaccounttype := newStorageClassObj.Parameters["storageaccounttype"]
+
+		if storageaccounttype == "" {
+			panic("error: the new storage class does not have a skuname or storageaccounttype parameter set")
+		}
+
+		skuName = storageaccounttype
 	}
 
 	controllerRefs := make(map[string]controllerRef)
